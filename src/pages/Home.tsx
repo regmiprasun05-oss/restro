@@ -84,7 +84,7 @@ const HeroSection: React.FC = () => {
             playsInline
             className="h-full w-full object-cover brightness-75"
           >
-            <source src="/.mp4" type="video/mp4" />
+            <source src="/restaurant.mp4" type="video/mp4" />
           </video>
 
           {/* DARK OVERLAY */}
