@@ -3,39 +3,40 @@ import React, { useEffect, useRef, useState } from "react";
 /* ================= TYPEWRITER ================= */
 const TypewriterColored: React.FC = () => {
   const segments = [
-    { text: "Online Ordering System built for businesses " },
-    { text: "Ordering", className: "text-red-500" },
-    { text: " System " },
-    { text: " built " },
-    { text: "for", className: "text-red-500" },
+    { text: "Online " },
+    { text: "Ordering", className: "text-red-400" },
+    { text: " System built " },
+    { text: "for", className: "text-red-400" },
     { text: " businesses" },
   ];
 
   const chars = segments.flatMap(seg =>
-    seg.text.split("").map(char => ({ char, className: seg.className }))
+    seg.text.split("").map(char => ({
+      char,
+      className: seg.className ?? "text-gray-200",
+    }))
   );
 
-  const [i, setI] = useState(0);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    if (i >= chars.length) return;
-    const t = setTimeout(() => setI(v => v + 1), 100);
-    return () => clearTimeout(t);
-  }, [i, chars.length]);
+    if (index >= chars.length) return;
+    const timer = setTimeout(() => setIndex(v => v + 1), 90);
+    return () => clearTimeout(timer);
+  }, [index, chars.length]);
 
   return (
     <>
-      {chars.slice(0, i).map((c, idx) => (
-        <span key={idx} className={c.className}>
+      {chars.slice(0, index).map((c, i) => (
+        <span key={i} className={c.className}>
           {c.char}
         </span>
       ))}
-      {/* Removed the blinking cursor */}
     </>
   );
 };
 
-/* ================= HERO ================= */
+/* ================= HERO SECTION ================= */
 const HeroSection: React.FC = () => {
   const ref = useRef<HTMLElement | null>(null);
   const [progress, setProgress] = useState(0);
@@ -47,10 +48,8 @@ const HeroSection: React.FC = () => {
       const rect = ref.current.getBoundingClientRect();
       const vh = window.innerHeight;
 
-      // Webflow-style trigger (only AFTER leaving viewport)
       const raw = (vh - rect.bottom) / vh;
       const clamped = Math.min(Math.max(raw, 0), 1);
-
       setProgress(clamped);
     };
 
@@ -59,17 +58,16 @@ const HeroSection: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Cubic ease-out (same feel as Webflow)
+  // Cubic ease-out (Webflow-like)
   const eased = 1 - Math.pow(1 - progress, 3);
 
   return (
     <section
       ref={ref}
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen w-full overflow-hidden bg-black"
     >
-      {/* ===== STATIC FULL-SIZE WRAPPER ===== */}
+      {/* ===== BACKGROUND VIDEO ===== */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* ===== RETRACTING LAYER ===== */}
         <div
           className="absolute inset-0 will-change-transform"
           style={{
@@ -84,16 +82,16 @@ const HeroSection: React.FC = () => {
             loop
             muted
             playsInline
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover brightness-75"
           >
             <source src="/RetroX.mp4" type="video/mp4" />
           </video>
 
-          {/* Overlay */}
+          {/* DARK OVERLAY */}
           <div
             className="absolute inset-0 bg-black"
             style={{
-              opacity: 0.5 - eased * 0.2,
+              opacity: 0.7 - eased * 0.15,
             }}
           />
         </div>
@@ -101,11 +99,9 @@ const HeroSection: React.FC = () => {
 
       {/* ===== CONTENT ===== */}
       <div className="relative z-10 flex h-full items-center justify-center px-4 text-center">
-        <div>
-          <h2 className="mt-2 text-3xl font-bold text-black sm:text-4xl md:text-5xl lg:max-w-4xl mx-auto">
-            <TypewriterColored />
-          </h2>
-        </div>
+        <h2 className="text-3xl font-bold leading-tight sm:text-4xl md:text-5xl lg:max-w-4xl mx-auto">
+          <TypewriterColored />
+        </h2>
       </div>
     </section>
   );
